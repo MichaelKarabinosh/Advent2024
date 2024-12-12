@@ -10,6 +10,8 @@ public class Day6 {
         ArrayList<String> fileData = getFileData("src/InputFile");
         // you now have a list of Strings from the file "InputFile"
         String [] [] a = new String[130][130];
+        int x1 = 0;
+        int y1 = 0;
         for (int i = 0; i < fileData.size(); i++)
         {
             String line = fileData.get(i);
@@ -19,19 +21,21 @@ public class Day6 {
                 if (a[i][j].equals("^"))
                 {
                     System.out.println(i + "" + j);
+                    x1 = i;
+                    y1 = j;
                 }
             }
         }
         String[][] c = deepCopy(a);
-        System.out.println(countVisits(a));;
+        System.out.println(countVisits(a, x1, y1));;
         int loops = 0;
         for (int i = 0; i < 130; i++)
         {
             for (int j = 0; j < 130; j++)
             {
                 String[][] b = deepCopy(c);
-                    b[i][j] = "#";
-                if (isLoop(b))
+                b[i][j] = "#";
+                if (isLoop(b, x1, y1))
                 {
                     loops++;
                 }
@@ -41,26 +45,17 @@ public class Day6 {
     }
 
 
-    public static int countVisits(String[][] a)
+    public static int countVisits(String[][] a, int x, int y)
     {
-        int steps = 0;
-        int ypos = 75;
-        int xpos = 73;
+        int ypos = x;
+        int xpos = y;
         boolean up = true;
         boolean right = false;
         boolean down = false;
         boolean left = false;
-        boolean outOfBounds = false;
-        int visits = 0;
-        boolean loop = false;
         a[ypos - 1][xpos] = "^";
         while (xpos < 131)
         {
-            if (steps > 10000)
-            {
-                loop = true;
-                break;
-            }
             if (xpos == 130)
             {
                 break;
@@ -112,25 +107,21 @@ public class Day6 {
             {
                 a[ypos][xpos] = "X";
                 ypos--;
-                steps++;
             }
             if (right)
             {
                 a[ypos][xpos] = "X";
                 xpos++;
-                steps++;
             }
             if (down)
             {
                 a[ypos][xpos] = "X";
                 ypos++;
-                steps++;
             }
             if (left)
             {
                 a[ypos][xpos] = "X";
                 xpos--;
-                steps++;
             }
         }
         int count = 0;
@@ -148,36 +139,32 @@ public class Day6 {
     }
 
 
-    public static boolean isLoop(String[][] a)
+    public static boolean isLoop(String[][] a, int x, int y)
     {
         int steps = 0;
-        int ypos = 75;
-        int xpos = 73;
+        int ypos = x;
+        int xpos = y;
         boolean up = true;
         boolean right = false;
         boolean down = false;
         boolean left = false;
-        while (steps < 99999)
+        while (steps < 10000)
         {
-            if (steps > 10000)
-            {
-                return true;
-            }
             if (xpos == 130)
             {
-                break;
+                return false;
             }
             if (ypos == 130)
             {
-                break;
+                return false;
             }
             if (xpos == -1)
             {
-                break;
+                return false;
             }
             if (ypos == -1)
             {
-                break;
+                return false;
             }
             try {
                 if (up) {
@@ -193,7 +180,6 @@ public class Day6 {
                     }
                 }
                 if (down) {
-
                     if (a[ypos + 1][xpos].equals("#")) {
                         down = false;
                         left = true;
@@ -235,7 +221,7 @@ public class Day6 {
                 steps++;
             }
         }
-        return false;
+        return true;
     }
 
     public static String[][] deepCopy(String[][] original) {
