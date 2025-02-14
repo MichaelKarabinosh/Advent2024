@@ -6,26 +6,25 @@ public class Main {
     public static void main(String[] args) {
 
         ArrayList<String> fileData = getFileData("src/InputFile");
-        HashMap<String, String> pairs =  new HashMap<>();
+        HashMap<String, String> pairs;
         int len = fileData.size() - 1;
         pairs = findPairs(fileData);
         Set<String> antennas = pairs.keySet();
         HashMap<ArrayList<Integer>, Integer> possiblePositions = doPartOne(pairs, antennas, len);
         System.out.println("part one: " + possiblePositions.size());
-
-
-
+        possiblePositions = doPartTwo(pairs, antennas, len);
+        System.out.println("part two: " + possiblePositions.size());
     }
 
 
     public static ArrayList<String> getFileData(String fileName) {
-        ArrayList<String> fileData = new ArrayList<String>();
+        ArrayList<String> fileData = new ArrayList<>();
         try {
             File f = new File(fileName);
             Scanner s = new Scanner(f);
             while (s.hasNextLine()) {
                 String line = s.nextLine();
-                if (!line.equals(""))
+                if (!line.isEmpty())
                     fileData.add(line);
             }
             return fileData;
@@ -118,24 +117,45 @@ public class Main {
 //                        System.out.println(Arrays.toString(pair1));
                         int xDiff = Integer.parseInt(pair1[0]) - Integer.parseInt(pair2[0]);
                         int yDiff = Integer.parseInt(pair1[1]) - Integer.parseInt(pair2[1]);
+                        int xUp = 0;
+                        int yUp = 0;
+                        int xDown = 0;
+                        int yDown = 0;
                         boolean exceedsBounds = false;
                         while (!exceedsBounds) {
+                            ArrayList<Integer> posAnts = new ArrayList<>();
 //                        System.out.print(Arrays.toString(pair1) + "" + Arrays.toString(pair2) + " " + xDiff + " " + yDiff);
-                            if (Integer.parseInt(pair1[0]) + xDiff >= 0 && Integer.parseInt(pair1[0]) + xDiff <= len && Integer.parseInt(pair1[1]) + yDiff >= 0 && Integer.parseInt(pair1[1]) + yDiff <= len) {
-                                ArrayList<Integer> posAnts = new ArrayList<>();
-                                posAnts.add(Integer.parseInt(pair1[0]) + xDiff);
-                                posAnts.add(Integer.parseInt(pair1[1]) + yDiff);
-                                possiblePositions.put(posAnts, 1);
-//                            System.out.println(" " + (Integer.parseInt(pair1[0]) + xDiff) + " " + (Integer.parseInt(pair1[1]) + yDiff));
+                            if (Integer.parseInt(pair1[0]) + xUp >= 0 && Integer.parseInt(pair1[0]) + xUp <= len && Integer.parseInt(pair1[1]) + yUp >= 0 && Integer.parseInt(pair1[1]) + yUp <= len) {
 
-                            }
-                            if (Integer.parseInt(pair2[0]) - xDiff >= 0 && Integer.parseInt(pair2[0]) - xDiff <= len && Integer.parseInt(pair2[1]) - yDiff >= 0 && Integer.parseInt(pair2[1]) - yDiff <= len) {
-                                ArrayList<Integer> posAnts = new ArrayList<>();
-                                posAnts.add(Integer.parseInt(pair2[0]) - xDiff);
-                                posAnts.add(Integer.parseInt(pair2[1]) - yDiff);
+                                posAnts.add(Integer.parseInt(pair1[0]) + xUp);
+                                posAnts.add(Integer.parseInt(pair1[1]) + yUp);
                                 possiblePositions.put(posAnts, 1);
                             }
+                            else {
+                                exceedsBounds = true;
+                            }
+                            xUp += xDiff;
+                            yUp += yDiff;
+
                         }
+                        exceedsBounds = false;
+//                            System.out.println(" " + (Integer.parseInt(pair1[0]) + xDiff) + " " + (Integer.parseInt(pair1[1]) + yDiff));
+                        while (!exceedsBounds) {
+                            ArrayList<Integer> posAnts = new ArrayList<>();
+
+                            if (Integer.parseInt(pair2[0]) - xDown >= 0 && Integer.parseInt(pair2[0]) - xDown <= len && Integer.parseInt(pair2[1]) - yDown >= 0 && Integer.parseInt(pair2[1]) - yDown <= len) {
+                                posAnts.add(Integer.parseInt(pair2[0]) - xDown);
+                                posAnts.add(Integer.parseInt(pair2[1]) - yDown);
+                                possiblePositions.put(posAnts, 1);
+                            }
+                            else {
+                                exceedsBounds = true;
+                            }
+                            xDown -= xDiff;
+                            yDown -= yDiff;
+
+                        }
+
 
                     }
 
