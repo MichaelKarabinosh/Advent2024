@@ -9,8 +9,7 @@ public class Day9 {
 
         ArrayList<String> fileData = getFileData("src/InputFile");
        String data = fileData.getFirst();
-
-       String disk = "";
+       ArrayList<String> diskAsList = new ArrayList<>();
        int num = 0;
        for (int i = 0; i < data.length(); i++)
        {
@@ -18,28 +17,32 @@ public class Day9 {
             String numAsStr = num + "";
            if (i % 2 ==  0)
            {
-               disk +=  numAsStr.repeat(Integer.parseInt(char1));
+               for (int j = 0; j < Integer.parseInt(char1); j++)
+               {
+                   diskAsList.add(numAsStr);
+               }
                num++;
            }
            else {
-               disk += ".".repeat(Integer.parseInt(char1));
+               for (int j = 0; j < Integer.parseInt(char1); j++) {
+                   diskAsList.add(".");
+               }
            }
        }
-        long total = getTotal(disk);
-        System.out.println("part one: " + total);
+       System.out.println("part one: " + doPartOne(diskAsList));
 
 
 
     }
 
-    private static long getTotal(String disk) {
+    public static long doPartOne(ArrayList<String> diskAsList)
+    {
         ArrayList<Integer> freeSpaces = new ArrayList<>();
-        ArrayList<String> diskAsList = new ArrayList<>();
         int numNums = 0;
-        for (int i = 0; i < disk.length(); i++)
+        for (int i = 0; i < diskAsList.size(); i++)
         {
-            diskAsList.add(disk.charAt(i) + "");
-            if (disk.charAt(i) == '.') {
+
+            if (diskAsList.get(i).equals(".")) {
                 freeSpaces.add(i);
             }
             else {
@@ -64,6 +67,7 @@ public class Day9 {
         }
         return total;
     }
+
 
 
     public static ArrayList<String> getFileData(String fileName) {
